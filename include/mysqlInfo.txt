@@ -1,0 +1,24 @@
+database connectivity :
+
+Step1 - Connectivity With Database
+Step2 - Select Database
+Step3 - Queries (Select,Insert,Update,Delete)
+Step4 - Execute Query
+Step5 - Close connectivity with Database
+
+
+
+//MySql
+
+$con=mysql_connect("localhost","Root","");
+
+mysql_select_db("sms",$con);
+
+//Select Query 
+//Insert Query 
+//Update Query 
+//Delete Query 
+
+
+
+$res=mysql_query($sql);
