@@ -1,16 +1,11 @@
 <?php
-// Initialize the session
-session_start();
-
-// Include config file
+// Initialize the 
 require_once "include/connection.php";
-
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] == true) {
-    header("location:dashboard.php");
+    header('location:login.php');
     exit();
 }
-
 // Define variables and initialize with empty values
 $emailErr = $passwordErr = "";
 $email = $password = "";
@@ -23,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $emailErr = "Email is required";
         $flag = false;
     } else {
-        $email = test_input($_POST["email"]);
+        $email = test_input($_POST["email"]); 
     }
 
     if (empty($_POST["password"])) {
@@ -32,32 +27,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $password = test_input($_POST["password"]);
     }
-    if (isset($_POST["remark"])) {
-        setcookie("user", $_POST["email"], time() + 60 * 60);
-        setcookie("pass", $_POST["password"], time() + 60 * 60);
-        $_SESSION["loggedin"] = true;
-        header("location:dashboard.php");
-    } else {
-        setcookie("user", $_POST["email"], time() - 60 * 10);
-        setcookie("pass", $_POST["password"], time() - 60 * 10);
-        $_SESSION["loggedin"] = true;
-        header("location:dashboard.php");
-        $flag = false;
-    }
-
-
+   
     if ($flag) {
-        $query = "SELECT * FROM users WHERE email='$email' && password='$password'";
+        
+
+        $query = "SELECT * FROM users WHERE email='$email' and password='$password'";
         $data = mysqli_query($link, $query);
         $total = mysqli_num_rows($data);
         if ($total == 1) {
+            if (isset($_POST["remark"])) {
+                setcookie("user", $_POST["email"], time() + 60 * 60);
+                setcookie("pass", $_POST["password"], time() + 60 * 60);
+            } else {
+                setcookie("user", $_POST["email"], time() - 60 * 10);
+                setcookie("pass", $_POST["password"], time() - 60 * 10);
+            }
             $_SESSION['user_name'] = $email;
             header("location:dashboard.php");
         } else {
-            echo "login Failed";
+            $login_Err = "Invalid Username and Password";
         }
     }
 }
+
 function test_input($data)
 {
     $data = trim($data);
@@ -152,6 +144,7 @@ function setchecked($field)
                         <div class="message-box">
                             <h1>Welcome Back:)</h1>
                             <p><span>Please login with your registered email/username and password.</span></p>
+                            <span style="color:red;"><?php echo isset($login_Err) ?  $login_Err : ''; ?> </span>
                             <div class="full-width">
                                 <div class="username">
                                     <img src="img/icons/email.svg">
@@ -205,8 +198,7 @@ function setchecked($field)
 <script src="js/bootstrap.minf700.js?v=1.0.1"></script>
 
  -->
-
-    <!-- <script type="text/javascript">
+     <script type="text/javascript">
         $(document).ready(function () {
             $.validator.addMethod("emailValidate", function (value, element) {
                 var emailRegExp = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,5})?$/;
@@ -233,32 +225,7 @@ function setchecked($field)
             });
         });
     </script>
- -->
+ 
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
